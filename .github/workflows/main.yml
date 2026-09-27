@@ -2,19 +2,19 @@ name: Post Trends Every 30 Minutes
 
 on:
   schedule:
-    - cron: '*/30 * * * *'  # كل 30 دقيقة
-  workflow_dispatch:  # تقدر تشغله يدويا
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
 
 jobs:
   post:
-    runs-on: ubuntu-24.04  # ثابت باش ما يعطيكش تحذير ubuntu-latest
+    runs-on: ubuntu-24.04
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5  # كان v4 - توا v5 يدعم Node 24
+        uses: actions/checkout@v5
       
       - name: Set up Python
-        uses: actions/setup-python@v6  # كان v5 - توا v6 يدعم Node 24
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -23,6 +23,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install requests Pillow
       
       - name: Post trending topic with REAL image
         env:
@@ -30,4 +31,7 @@ jobs:
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
           TREND_GEO: ${{ secrets.TREND_GEO }}
         run: |
-          python facebook_poster.py
+          echo "Files in bot/:"
+          ls -la bot/
+          echo "Running bot/facebook_poster.py"
+          python bot/facebook_poster.py
